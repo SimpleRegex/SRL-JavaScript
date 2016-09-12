@@ -1,0 +1,38 @@
+{
+  "name": "srl",
+  "version": "0.1.0",
+  "description": "Simple Regex Language",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "coverage": "istanbul cover _mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SimpleRegex/SRL-JavaScript.git"
+  },
+  "keywords": [
+    "srl",
+    "regex",
+    "re",
+    "simpleregex"
+  ],
+  "author": "Simple Regex Language",
+  "maintainers": [
+    "Boom Lee <teabyii@gmail.com>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SimpleRegex/SRL-JavaScript/issues"
+  },
+  "engines": {
+    "node": ">= 6.0.0"
+  },
+  "homepage": "https://simple-regex.com",
+  "devDependencies": {
+    "coveralls": "^2.11.12",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.0.2",
+    "mocha-lcov-reporter": "^1.2.0"
+  }
+}
