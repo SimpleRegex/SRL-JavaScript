@@ -122,7 +122,6 @@ describe('Builder Test', () => {
     })
 
     it('Raw', () => {
-        //$this->assertTrue(SRL::literally('foo')->raw('b[a-z]r')->isValid());
         const regex = new SRL()
             .literally('foo')
             .raw('b[a-z]r')
