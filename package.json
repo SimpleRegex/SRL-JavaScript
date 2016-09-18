@@ -2,7 +2,7 @@
   "name": "srl",
   "version": "0.1.0",
   "description": "Simple Regex Language",
-  "main": "index.js",
+  "main": "lib/SRL.js",
   "scripts": {
     "test": "mocha",
     "coverage": "istanbul cover _mocha"
@@ -30,7 +30,6 @@
   },
   "homepage": "https://simple-regex.com",
   "devDependencies": {
-    "coveralls": "^2.11.12",
     "istanbul": "^0.4.5",
     "mocha": "^3.0.2",
     "mocha-lcov-reporter": "^1.2.0"
