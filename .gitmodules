@@ -1,0 +1,3 @@
+[submodule "test/rules"]
+	path = test/rules
+	url = https://github.com/SimpleRegex/Test-Rules
