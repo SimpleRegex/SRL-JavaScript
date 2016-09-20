@@ -76,6 +76,37 @@ describe('Builder Test', () => {
         assert.equal(matches[1], 'green')
     })
 
+    it('More Methods', () => {
+        const regex = new SRL()
+            .noWhitespace()
+            .literally('a')
+            .ifFollowedBy((builder) => {
+                return builder.noCharacter()
+            })
+            .tab()
+            .mustEnd()
+            .multiLine()
+            .get()
+        const target = `
+        ba\t
+        aaabbb
+        `
+        assert.ok(regex.test(target))
+
+        const regex2 = new SRL()
+            .startsWith()
+            .literally('a')
+            .newLine()
+            .whitespace()
+            .onceOrMore()
+            .literally('b')
+            .mustEnd()
+            .get()
+        const target2 = `a
+        b`
+        assert.ok(regex2.test(target2))
+    })
+
     it('Replace', () => {
         const regex = new SRL()
             .capture((query) => {
@@ -107,6 +138,17 @@ describe('Builder Test', () => {
         const matches = ',, '.match(regex)
         assert.equal(matches[1], ',,')
         assert.notEqual(matches[1], ',, ')
+
+        const regex2 = new SRL()
+            .literally(',')
+            .atLeast(1)
+            .lazy()
+            .get()
+
+        const matches2 = regex2.exec(',,,,,')
+        assert.equal(matches2[0], ',')
+        assert.notEqual(matches2[0], ',,,,,')
+
     })
 
     it('Global', () => {
