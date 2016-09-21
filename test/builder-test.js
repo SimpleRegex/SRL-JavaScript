@@ -158,7 +158,7 @@ describe('Builder Test', () => {
             .get()
 
         let count = 0
-        'aaa'.replace(regex, () => count++ )
+        'aaa'.replace(regex, () => count++)
 
         assert.equal(count, 3)
     })

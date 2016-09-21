@@ -10,12 +10,12 @@ describe('Builder Exceptions', () => {
     it('Raw method', () => {
         const regex = new SRL('Literally "a"')
 
-        assert.throws(() => {
+        assert['throws'](() => {
             regex.raw(')')
         }, (error) => {
             return error instanceof BuilderException &&
-                error.message === 'Adding raw would invalidate this regular expression. Reverted.'
-                && regex.test('a')
+                error.message === 'Adding raw would invalidate this regular expression. Reverted.' &&
+                regex.test('a')
         })
     })
 
@@ -26,7 +26,7 @@ describe('Implementation Exception', () => {
     it('Lazy Method', () => {
         const regex = new SRL('Literally "a"')
 
-        assert.throws(() => {
+        assert['throws'](() => {
             regex.lazy()
         }, (error) => {
             return error instanceof ImplementationException &&

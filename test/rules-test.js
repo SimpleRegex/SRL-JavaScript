@@ -63,17 +63,17 @@ function buildData(lines) {
             line.substr(-2, 2) === '":'
         ) {
             inCapture = line.slice(13, -2)
-            data['captures'][inCapture] = []
+            data.captures[inCapture] = []
         } else if (
             inCapture &&
             line.startsWith('-')
         ) {
             const split = line.substr(1).split(': ')
             const index = captures.indexOf(split[1].trim())
-            let target = data['captures'][inCapture][Number(split[0])]
+            let target = data.captures[inCapture][Number(split[0])]
 
             if (!target) {
-                target = data['captures'][inCapture][Number(split[0])] = []
+                target = data.captures[inCapture][Number(split[0])] = []
             }
 
             if (index !== -1) {
@@ -121,7 +121,7 @@ function runAssertions(data) {
 
         try {
             let result = null
-            while (result = regex.exec(test)) {
+            while ((result = regex.exec(test))) {
                 matches.push(result.map((item) => item === undefined ? '' : item).slice(1))
 
                 if (regex.lastIndex === test.length - 1) {

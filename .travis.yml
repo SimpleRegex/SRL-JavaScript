@@ -5,8 +5,10 @@ cache:
   - node_modules
 install:
   - npm install
+  - npm install -g eslint
   - npm install -g codecov
 script:
+  - eslint .
   - istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec
   - codecov
 
