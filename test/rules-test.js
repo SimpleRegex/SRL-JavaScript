@@ -15,8 +15,10 @@ function testRules() {
             return
         }
 
-        const lines = fs.readFileSync(path.join(rulesDir, file), { encoding: 'utf-8' }).split('\n')
-        runAssertions(buildData(lines))
+        it(file.slice(0, -5).split('_').join(' '), () => {
+            const lines = fs.readFileSync(path.join(rulesDir, file), { encoding: 'utf-8' }).split('\n')
+            runAssertions(buildData(lines))
+        })
     })
 }
 
