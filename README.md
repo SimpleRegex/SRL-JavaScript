@@ -9,7 +9,7 @@ JavaScript implementation of [Simple Regex](https://simple-regex.com/) :tada::ta
 > Because of the JavaScript regex engine, there is something different from [Simple Regex](https://simple-regex.com/) 
 - NOT support `as` to assign capture name. 
 - NOT support `if already had/if not already had` 
-- NO `firstMatch`, since in JavaScript `lazy` means non-greedy (matching the fewest possible characters).
+- NO `first match` and NO `all lazy`, since in JavaScript `lazy` means non-greedy (matching the fewest possible characters).
 
 ## Installation
 
@@ -26,21 +26,29 @@ The builder can agent `test/exec` method to the generated regex object. Or you c
 ```js
 const SRL = require('srl')
 const query = new SRL('letter exactly 3 times')
-const regex = query.get() // /[a-z]{3}/
 
-query.test('aaa') // true
-query.exec('aaa') // [ 'aaa', index: 0, input: 'aaa' ]
+query.isMatching('aaa') // true
+query.getMatch('aaa') // [ 'aaa', index: 0, input: 'aaa' ]
 
 query
     .digit()
     .neverOrMore()
     .mustEnd()
-    .get() // /[a-z]{3}[0-9]*$/
+    .get() // /[a-z]{3}[0-9]*$/g
 ```
 
 Required Node 6.0+ for the ES6 support, Or you can use [Babel](http://babeljs.io/) to support Node below 6.0.
 
-Using [Webpack](http://webpack.github.io) and [babel-loader](https://github.com/babel/babel-loader) to pack it if want to use in browsers. 
+Using [Webpack](http://webpack.github.io) and [babel-loader](https://github.com/babel/babel-loader) to pack it if want to use in browsers.
+
+## Additional
+
+In SRL-JavaScript we apply `g` flag as default to follow the [Simple Regex](https://simple-regex.com/) "standard", so we provide more API to use regex conveniently.
+
+- `isMatching` - Validate if the expression matches the given string.
+- `getMatch` - Get first match of the given string, like run `regex.exec` once.
+- `getMatches` - Get all matches of the given string, like a loop to run `regex.exec`.
+- `removeModifier` - Remove specific flag.
 
 ## Development
 
