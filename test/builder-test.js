@@ -1,7 +1,7 @@
 'use strict'
 
 const assert = require('assert')
-const SRL = require('../lib/Builder')
+const SRL = require('../')
 
 describe('Builder isMatching', () => {
     it('Simple Phone Number Format', () => {
@@ -168,5 +168,14 @@ describe('Builder isMatching', () => {
         assert.ok(regex.isMatching('foobar1'))
         assert.ok(!regex.isMatching('fooa'))
         assert.ok(!regex.isMatching('foobar'))
+    })
+
+    it('Remove modifier', () => {
+        const regex = new SRL()
+            .literally('foo')
+            .removeModifier('g')
+            .get()
+
+        assert.deepEqual(regex, /(?:foo)/)
     })
 })
