@@ -102,7 +102,7 @@ function runAssertions(data) {
 
     data.matches.forEach((match) => {
         assert(
-            query.test(match),
+            query.isMatching(match),
             `Failed asserting that this query matches '${match}'.${getExpression(data.srl, query)}`
         )
         assertionMade = true
@@ -110,7 +110,7 @@ function runAssertions(data) {
 
     data.no_matches.forEach((noMatch) => {
         assert(
-            !query.test(noMatch),
+            !query.isMatching(noMatch),
             `Failed asserting that this query does not match '${noMatch}'.${getExpression(data.srl, query)}`
         )
         assertionMade = true
@@ -118,32 +118,28 @@ function runAssertions(data) {
 
     Object.keys(data.captures).forEach((test) => {
         const expected = data.captures[test]
-        const matches = []
-        const regex = query.all()
+        let matches = null
 
         try {
-            let result = null
-            while ((result = regex.exec(test))) {
-                matches.push(result.map((item) => item === undefined ? '' : item).slice(1))
-
-                if (regex.lastIndex === test.length - 1) {
-                    break
-                }
-            }
+            matches = query.getMatches(test)
         } catch (e) {
             assert(false, `Parser error: ${e.message}${getExpression(data.srl, query)}`)
         }
 
         assert.equal(
-            expected.length,
             matches.length,
+            expected.length,
             `Invalid match count for test ${test}.${getExpression(data.srl, query)}`
         )
 
         matches.forEach((capture, index) => {
+            const result = Array.from(capture).slice(1).map((item) => {
+                return item === undefined ? '' : item
+            })
+
             assert.deepEqual(
+                result,
                 expected[index],
-                capture,
                 `The capture group did not return the expected results for test ${test}.${getExpression(data.srl, query)}`
             )
         })

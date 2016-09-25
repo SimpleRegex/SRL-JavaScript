@@ -12,7 +12,7 @@ describe('Cache', () => {
     })
 
     it('In interpreter', () => {
-        const RE = /(?:a)/
+        const RE = /(?:a)/g
         const query = new Interpreter('Literally "a"')
         assert.deepEqual(query.get(), RE)
 

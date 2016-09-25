@@ -1,9 +1,9 @@
 'use strict'
 
 const assert = require('assert')
-const SRL = require('../lib/Builder')
+const SRL = require('../')
 
-describe('Builder Test', () => {
+describe('Builder isMatching', () => {
     it('Simple Phone Number Format', () => {
         const regex = new SRL()
             .startsWith()
@@ -15,12 +15,12 @@ describe('Builder Test', () => {
             .digit().onceOrMore()
             .mustEnd()
 
-        assert.ok(regex.test('+49 123-45'))
-        assert.ok(regex.exec('+492 1235-4'))
-        assert.ok(!regex.test('+49 123 45'))
-        assert.ok(!regex.exec('49 123-45'))
-        assert.ok(!regex.test('a+49 123-45'))
-        assert.ok(!regex.test('+49 123-45b'))
+        assert.ok(regex.isMatching('+49 123-45'))
+        assert.ok(regex.isMatching('+492 1235-4'))
+        assert.ok(!regex.isMatching('+49 123 45'))
+        assert.ok(!regex.isMatching('49 123-45'))
+        assert.ok(!regex.isMatching('a+49 123-45'))
+        assert.ok(!regex.isMatching('+49 123-45b'))
     })
 
     it('Simple Email Format', () => {
@@ -39,15 +39,14 @@ describe('Builder Test', () => {
             .letter().atLeast(2)
             .mustEnd()
             .caseInsensitive()
-            .get() // Use get() to test resulting RegExp object.
 
-        assert.equal('sample@example.com'.match(regex)[0], 'sample@example.com')
-        assert.equal(regex.exec('super-He4vy.add+ress@top-Le.ve1.domains'), 'super-He4vy.add+ress@top-Le.ve1.domains')
-        assert.ok(!regex.test('sample.example.com'))
-        assert.ok(!regex.test('missing@tld'))
-        assert.ok(!regex.test('hav ing@spac.es'))
-        assert.ok(!regex.test('no@pe.123'))
-        assert.ok(!regex.test('invalid@email.com123'))
+        assert.equal(regex.getMatch('sample@example.com')[0], 'sample@example.com')
+        assert.equal(regex.getMatch('super-He4vy.add+ress@top-Le.ve1.domains')[0], 'super-He4vy.add+ress@top-Le.ve1.domains')
+        assert.ok(!regex.isMatching('sample.example.com'))
+        assert.ok(!regex.isMatching('missing@tld'))
+        assert.ok(!regex.isMatching('hav ing@spac.es'))
+        assert.ok(!regex.isMatching('no@pe.123'))
+        assert.ok(!regex.isMatching('invalid@email.com123'))
     })
 
     it('Capture Group', () => {
@@ -65,14 +64,13 @@ describe('Builder Test', () => {
                 query.letter().onceOrMore()
             })
             .literally('.')
-            .get()
 
-        assert.ok(regex.test('my favorite color: blue.'))
-        assert.ok(regex.test('my favorite colour is green.'))
-        assert.ok(!regex.test('my favorite colour is green!'))
+        assert.ok(regex.isMatching('my favorite color: blue.'))
+        assert.ok(regex.isMatching('my favorite colour is green.'))
+        assert.ok(!regex.isMatching('my favorite colour is green!'))
 
         const testcase = 'my favorite colour is green. And my favorite color: yellow.'
-        const matches = testcase.match(regex)
+        const matches = regex.getMatch(testcase)
         assert.equal(matches[1], 'green')
     })
 
@@ -86,12 +84,12 @@ describe('Builder Test', () => {
             .tab()
             .mustEnd()
             .multiLine()
-            .get()
+
         const target = `
         ba\t
         aaabbb
         `
-        assert.ok(regex.test(target))
+        assert.ok(regex.isMatching(target))
 
         const regex2 = new SRL()
             .startsWith()
@@ -101,10 +99,10 @@ describe('Builder Test', () => {
             .onceOrMore()
             .literally('b')
             .mustEnd()
-            .get()
+
         const target2 = `a
         b`
-        assert.ok(regex2.test(target2))
+        assert.ok(regex2.isMatching(target2))
     })
 
     it('Replace', () => {
@@ -133,9 +131,8 @@ describe('Builder Test', () => {
                     .whitespace().optional()
                     .lazy()
             })
-            .get()
 
-        const matches = ',, '.match(regex)
+        const matches = regex.getMatch(',, ')
         assert.equal(matches[1], ',,')
         assert.notEqual(matches[1], ',, ')
 
@@ -143,18 +140,16 @@ describe('Builder Test', () => {
             .literally(',')
             .atLeast(1)
             .lazy()
-            .get()
 
-        const matches2 = regex2.exec(',,,,,')
+        const matches2 = regex2.getMatch(',,,,,')
         assert.equal(matches2[0], ',')
         assert.notEqual(matches2[0], ',,,,,')
 
     })
 
-    it('Global', () => {
+    it('Global as Default', () => {
         const regex = new SRL()
             .literally('a')
-            .all()
             .get()
 
         let count = 0
@@ -169,9 +164,18 @@ describe('Builder Test', () => {
             .raw('b[a-z]r')
             .raw(/\d+/)
 
-        assert.ok(regex.test('foobzr123'))
-        assert.ok(regex.test('foobar1'))
-        assert.ok(!regex.test('fooa'))
-        assert.ok(!regex.test('foobar'))
+        assert.ok(regex.isMatching('foobzr123'))
+        assert.ok(regex.isMatching('foobar1'))
+        assert.ok(!regex.isMatching('fooa'))
+        assert.ok(!regex.isMatching('foobar'))
+    })
+
+    it('Remove modifier', () => {
+        const regex = new SRL()
+            .literally('foo')
+            .removeModifier('g')
+            .get()
+
+        assert.deepEqual(regex, /(?:foo)/)
     })
 })

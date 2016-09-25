@@ -3,79 +3,79 @@
 const assert = require('assert')
 const Interpreter = require('../lib/Language/Interpreter')
 
-describe('Interpreter Test', () => {
+describe('Interpreter isMatching', () => {
     it('Parser', () => {
-        let regex = new Interpreter('aNy Character ONCE or more literAlly "fO/o"').get()
-        assert.deepEqual(regex, /\w+(?:fO\/o)/)
+        let query = new Interpreter('aNy Character ONCE or more literAlly "fO/o"')
+        assert.deepEqual(query.get(), /\w+(?:fO\/o)/g)
 
-        regex = new Interpreter(`
+        query = new Interpreter(`
             begin with literally "http", optional "s", literally "://", optional "www.",
             anything once or more, literally ".com", must end
-        `).get()
-        assert.deepEqual(regex, /^(?:http)(?:(?:s))?(?::\/\/)(?:(?:www\.))?.+(?:\.com)$/)
-        assert.ok(regex.test('http://www.ebay.com'))
-        assert.ok(regex.test('https://google.com'))
-        assert.ok(!regex.test('htt://google.com'))
-        assert.ok(!regex.test('http://.com'))
+        `)
+        assert.deepEqual(query.get(), /^(?:http)(?:(?:s))?(?::\/\/)(?:(?:www\.))?.+(?:\.com)$/g)
+        assert.ok(query.builder.isMatching('http://www.ebay.com'))
+        assert.ok(query.builder.isMatching('https://google.com'))
+        assert.ok(!query.builder.isMatching('htt://google.com'))
+        assert.ok(!query.builder.isMatching('http://.com'))
 
-        regex = new Interpreter(
+        query = new Interpreter(
             'begin with capture (digit from 0 to 8 once or more) if followed by "foo"'
-        ).get()
-        assert.deepEqual(regex, /^([0-8]+)(?=(?:foo))/)
-        assert.ok(regex.test('142foo'))
-        assert.ok(!regex.test('149foo'))
-        assert.ok(!regex.test('14bar'))
-        assert.equal('142foo'.match(regex)[1], '142')
+        )
+        assert.deepEqual(query.get(), /^([0-8]+)(?=(?:foo))/g)
+        assert.ok(query.builder.isMatching('142foo'))
+        assert.ok(!query.builder.isMatching('149foo'))
+        assert.ok(!query.builder.isMatching('14bar'))
+        assert.equal(query.builder.getMatch('142foo')[1], '142')
 
-        regex = new Interpreter('literally "colo", optional "u", literally "r"').get()
-        assert.ok(regex.test('color'))
-        assert.ok(regex.test('colour'))
+        query = new Interpreter('literally "colo", optional "u", literally "r"')
+        assert.ok(query.builder.isMatching('color'))
+        assert.ok(query.builder.isMatching('colour'))
 
-        regex = new Interpreter(
+        query = new Interpreter(
             'starts with number from 0 to 5 between 3 and 5 times, must end'
-        ).get()
-        assert.ok(regex.test('015'))
-        assert.ok(regex.test('44444'))
-        assert.ok(!regex.test('444444'))
-        assert.ok(!regex.test('1'))
-        assert.ok(!regex.test('563'))
+        )
+        assert.ok(query.builder.isMatching('015'))
+        assert.ok(query.builder.isMatching('44444'))
+        assert.ok(!query.builder.isMatching('444444'))
+        assert.ok(!query.builder.isMatching('1'))
+        assert.ok(!query.builder.isMatching('563'))
 
-        regex = new Interpreter(
+        query = new Interpreter(
             'starts with digit exactly 2 times, letter at least 3 time'
-        ).get()
-        assert.deepEqual(regex, /^[0-9]{2}[a-z]{3,}/)
-        assert.ok(regex.test('12abc'))
-        assert.ok(regex.test('12abcd'))
-        assert.ok(!regex.test('123abc'))
-        assert.ok(!regex.test('1a'))
-        assert.ok(!regex.test(''))
+        )
+        assert.deepEqual(query.get(), /^[0-9]{2}[a-z]{3,}/g)
+        assert.ok(query.builder.isMatching('12abc'))
+        assert.ok(query.builder.isMatching('12abcd'))
+        assert.ok(!query.builder.isMatching('123abc'))
+        assert.ok(!query.builder.isMatching('1a'))
+        assert.ok(!query.builder.isMatching(''))
     })
 
     it('Email', () => {
-        const regex = new Interpreter(`
+        const query = new Interpreter(`
             begin with any of (digit, letter, one of "._%+-") once or more,
             literally "@", either of (digit, letter, one of ".-") once or more, literally ".",
             letter at least 2, must end, case insensitive
-        `).get()
+        `)
 
-        assert.ok(regex.test('sample@example.com'))
-        assert.ok(regex.test('super-He4vy.add+ress@top-Le.ve1.domains'))
-        assert.ok(!regex.test('sample.example.com'))
-        assert.ok(!regex.test('missing@tld'))
-        assert.ok(!regex.test('hav ing@spac.es'))
-        assert.ok(!regex.test('no@pe.123'))
-        assert.ok(!regex.test('invalid@email.com123'))
+        assert.ok(query.builder.isMatching('sample@example.com'))
+        assert.ok(query.builder.isMatching('super-He4vy.add+ress@top-Le.ve1.domains'))
+        assert.ok(!query.builder.isMatching('sample.example.com'))
+        assert.ok(!query.builder.isMatching('missing@tld'))
+        assert.ok(!query.builder.isMatching('hav ing@spac.es'))
+        assert.ok(!query.builder.isMatching('no@pe.123'))
+        assert.ok(!query.builder.isMatching('invalid@email.com123'))
     })
 
     it('Capture Group', () => {
-        const regex = new Interpreter(
+        const query = new Interpreter(
             'literally "color:", whitespace, capture (letter once or more), literally ".", all'
-        ).get()
+        )
 
         const target = 'Favorite color: green. Another color: yellow.'
         const matches = []
         let result = null
-        while (result = regex.exec(target)) {
+        while (result = query.builder.exec(target)) {
             matches.push(result[1])
         }
 
@@ -84,22 +84,22 @@ describe('Interpreter Test', () => {
     })
 
     it('Parentheses', () => {
-        let regex = new Interpreter(
+        let query = new Interpreter(
             'begin with (literally "foo", literally "bar") twice must end'
-        ).get()
-        assert.deepEqual(regex, /^(?:(?:foo)(?:bar)){2}$/)
-        assert.ok(regex.test('foobarfoobar'))
-        assert.ok(!regex.test('foobar'))
+        )
+        assert.deepEqual(query.get(), /^(?:(?:foo)(?:bar)){2}$/g)
+        assert.ok(query.builder.isMatching('foobarfoobar'))
+        assert.ok(!query.builder.isMatching('foobar'))
 
-        regex = new Interpreter(
+        query = new Interpreter(
             'begin with literally "bar", (literally "foo", literally "bar") twice must end'
-        ).get()
-        assert.deepEqual(regex, /^(?:bar)(?:(?:foo)(?:bar)){2}$/)
-        assert.ok(regex.test('barfoobarfoobar'))
+        )
+        assert.deepEqual(query.get(), /^(?:bar)(?:(?:foo)(?:bar)){2}$/g)
+        assert.ok(query.builder.isMatching('barfoobarfoobar'))
 
-        regex = new Interpreter('(literally "foo") twice').get()
-        assert.deepEqual(regex, /(?:(?:foo)){2}/)
-        assert.ok(regex.test('foofoo'))
-        assert.ok(!regex.test('foo'))
+        query = new Interpreter('(literally "foo") twice')
+        assert.deepEqual(query.get(), /(?:(?:foo)){2}/g)
+        assert.ok(query.builder.isMatching('foofoo'))
+        assert.ok(!query.builder.isMatching('foo'))
     })
 })
