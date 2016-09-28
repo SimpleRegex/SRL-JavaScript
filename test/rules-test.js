@@ -38,7 +38,6 @@ function buildData(lines) {
         captures: {}
     }
     let inCapture = false
-    let captures = null // Remember captures' name and index.
 
     lines.forEach((line) => {
         if (line === '' || line.startsWith('#')) {
@@ -50,12 +49,7 @@ function buildData(lines) {
         }
 
         if (line.startsWith('srl: ')) {
-            captures = []
-
-            data.srl = line.substr(5).replace(/as\s+"([^"]+)"/g, (s, c) => {
-                captures.push(c)
-                return ''
-            })
+            data.srl = line.substr(5)
         } else if (line.startsWith('match: "')) {
             data.matches.push(applySpecialChars(line.slice(8, -1)))
         } else if (line.startsWith('no match: "')) {
@@ -66,23 +60,15 @@ function buildData(lines) {
         ) {
             inCapture = line.slice(13, -2)
             data.captures[inCapture] = []
-        } else if (
-            inCapture &&
-            line.startsWith('-')
-        ) {
+        } else if (inCapture && line.startsWith('-')) {
             const split = line.substr(1).split(': ')
-            const index = captures.indexOf(split[1].trim())
             let target = data.captures[inCapture][Number(split[0])]
 
             if (!target) {
                 target = data.captures[inCapture][Number(split[0])] = []
             }
 
-            if (index !== -1) {
-                target[index] = applySpecialChars(split[2].slice(1, -1))
-            } else {
-                target.push(applySpecialChars(split[2].slice(1, -1)))
-            }
+            target[split[1]] = applySpecialChars(split[2].slice(1, -1))
         }
     })
 
@@ -133,15 +119,26 @@ function runAssertions(data) {
         )
 
         matches.forEach((capture, index) => {
-            const result = Array.from(capture).slice(1).map((item) => {
-                return item === undefined ? '' : item
-            })
+            // const result = Array.from(capture).slice(1).map((item) => {
+            //     return item === undefined ? '' : item
+            // })
+            const item = expected[index]
 
-            assert.deepEqual(
-                result,
-                expected[index],
-                `The capture group did not return the expected results for test ${test}.${getExpression(data.srl, query)}`
-            )
+            for (let key in item) {
+                if (typeof key === 'number') {
+                    assert.equal(
+                        capture[key + 1],
+                        item[key],
+                        `The capture group did not return the expected results for test ${test}.${getExpression(data.srl, query)}`
+                    )
+                } else {
+                    assert.equal(
+                        capture[key],
+                        item[key],
+                        `The capture group did not return the expected results for test ${test}.${getExpression(data.srl, query)}`
+                    )
+                }
+            }
         })
 
         assertionMade = true
