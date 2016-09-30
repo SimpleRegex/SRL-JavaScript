@@ -7,7 +7,7 @@ JavaScript implementation of [Simple Regex](https://simple-regex.com/) :tada::ta
 [![codecov](https://codecov.io/gh/SimpleRegex/SRL-JavaScript/branch/master/graph/badge.svg)](https://codecov.io/gh/SimpleRegex/SRL-JavaScript)
 
 > Because of the JavaScript regex engine, there is something different from [Simple Regex](https://simple-regex.com/) 
-- NOT support `as` to assign capture name. 
+- Support `as` to assign capture name with CODE but not regex engine. 
 - NOT support `if already had/if not already had` 
 - NO `first match` and NO `all lazy`, since in JavaScript `lazy` means non-greedy (matching the fewest possible characters).
 
@@ -46,9 +46,44 @@ Using [Webpack](http://webpack.github.io) and [babel-loader](https://github.com/
 In SRL-JavaScript we apply `g` flag as default to follow the [Simple Regex](https://simple-regex.com/) "standard", so we provide more API to use regex conveniently.
 
 - `isMatching` - Validate if the expression matches the given string.
+
+	```js
+    const query = new SRL('starts with letter twice')
+    query.isMatching(' aa') // false
+    query.isMatching('bbb') // true
+    ```
+
 - `getMatch` - Get first match of the given string, like run `regex.exec` once.
+
+    ```js
+    const query = new SRL('capture (letter twice) as word whitespace')
+
+    query.getMatch('aa bb cc dd') // [ 'aa ', 'aa', index: 0, input: 'aa bb cc dd', word: 'aa' ]
+    ```
+
 - `getMatches` - Get all matches of the given string, like a loop to run `regex.exec`.
+
+    ```js
+    const query = new SRL('capture (letter twice) as word whitespace')
+    
+    query.getMatches('aa bb cc dd')
+    /**
+     * [ 
+     *     [ 'aa ', 'aa', index: 0, input: 'aa bb cc dd', word: 'aa' ],
+     *     [ 'bb ', 'bb', index: 3, input: 'aa bb cc dd', word: 'bb' ],
+     *     [ 'cc ', 'cc', index: 6, input: 'aa bb cc dd', word: 'cc' ] 
+     * ]
+     */
+    ```
+
 - `removeModifier` - Remove specific flag.
+
+	```js
+    const query = new SRL('capture (letter twice) as word whitespace')
+    
+    query.removeModifier('g')
+    query.get() // /([a-z]{2})\s/
+    ```
 
 ## Development
 
