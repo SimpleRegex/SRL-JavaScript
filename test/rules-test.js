@@ -124,7 +124,7 @@ function runAssertions(data) {
             // })
             const item = expected[index]
 
-            for (let key in item) {
+            for (const key in item) {
                 if (typeof key === 'number') {
                     assert.equal(
                         capture[key + 1],
