@@ -7,7 +7,7 @@ JavaScript implementation of [Simple Regex](https://simple-regex.com/) :tada::ta
 [![codecov](https://codecov.io/gh/SimpleRegex/SRL-JavaScript/branch/master/graph/badge.svg)](https://codecov.io/gh/SimpleRegex/SRL-JavaScript)
 
 > Because of the JavaScript regex engine, there is something different from [Simple Regex](https://simple-regex.com/) 
-- Support `as` to assign capture name with CODE but not regex engine. 
+- Support `as` to assign capture name with CODE but not regex engine. 
 - NOT support `if already had/if not already had` 
 - NO `first match` and NO `all lazy`, since in JavaScript `lazy` means non-greedy (matching the fewest possible characters).
 
