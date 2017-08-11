@@ -1,0 +1,3 @@
+srl: begin with (word), letter, letter, letter, must end
+match: "abc"
+no match: "   "

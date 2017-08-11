@@ -1,0 +1,6 @@
+srl: begin with none of abcd, any of (letter, digit, uppercase letter) once or more, must end
+match: "Ad22"
+match: ">el"
+no match: "bring"
+no match: "cat"
+no match: "d20"

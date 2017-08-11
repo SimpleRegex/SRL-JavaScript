@@ -1,0 +1,8 @@
+srl: begin with (no digit), any of (letter, digit, uppercase letter) once or more, must end
+match: "#22a"
+match: "abc"
+match: "_A2"
+no match: "1"
+no match: "1a"
+no match: "56"
+no match: "8B"
