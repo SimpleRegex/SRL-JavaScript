@@ -1,0 +1,3 @@
+srl: begin with letter exactly 3 times, literally ':', tab, digit at least 1 times, must end
+match: "abc:	90"
+no match: "xyz:  5"
