@@ -1,0 +1,3 @@
+srl: begin with (no word), digit, digit, must end
+match: "12"
+no match: "aa"
