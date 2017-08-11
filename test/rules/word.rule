@@ -1,3 +1,3 @@
-srl: begin with word, letter, letter, letter, must end
+srl: begin with (word), letter, letter, letter, must end
 match: "abc"
-no match: "*abc"
+no match: "   "
