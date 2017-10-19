@@ -18,8 +18,8 @@ describe('ParseParentheses Test', () => {
         assert.deepEqual(parseParentheses('foo (0)'), [ 'foo', [ '0' ] ])
 
         assert.deepEqual(
-           parseParentheses('foo (bar (nested)) baz'),
-           [ 'foo', [ 'bar', [ 'nested' ] ], 'baz' ]
+            parseParentheses('foo (bar (nested)) baz'),
+            [ 'foo', [ 'bar', [ 'nested' ] ], 'baz' ]
         )
 
         assert.deepEqual(
