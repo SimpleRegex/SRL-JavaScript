@@ -8,8 +8,8 @@ describe('Fix issue 17', () => {
         assert.doesNotThrow(() => {
             const query = new SRL('capture (literally "TEST") as test')
             const match = query.getMatch('WORD NOT HERE')
-            console.log(match)
-        }, TypeError);
+            assert.equal(match, null)
+        }, TypeError)
     })
 })
 
