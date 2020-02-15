@@ -37,7 +37,7 @@ query
     .get() // /[a-z]{3}[0-9]*$/g
 ```
 
-Required Node 6.0+ for the ES6 support, Or you can use [Babel](http://babeljs.io/) to support Node below 6.0.
+Required Node 8.0+ for the ES6 support, Or you can use [Babel](http://babeljs.io/) to support Node below 6.0.
 
 Using [Webpack](http://webpack.github.io) and [babel-loader](https://github.com/babel/babel-loader) to pack it if want to use in browsers.
 
