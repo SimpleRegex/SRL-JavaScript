@@ -178,4 +178,32 @@ describe('Builder isMatching', () => {
 
         assert.deepEqual(regex, /(?:foo)/)
     })
+
+    it('Stores named captures', () => {
+        const regex_new = new SRL("capture (anything once or more) as first");
+        const testcase = 'hello world';
+
+        let matches_new = regex_new.getMatch(testcase)
+        assert.equal(matches_new["first"], 'hello world')
+
+        const regex_cached = new SRL("capture (anything once or more) as first");
+
+        let matches_cached = regex_cached.getMatch(testcase)
+        assert.equal(matches_cached["first"], 'hello world')
+
+    })
+    it('Stores named captures with implodeString', () => {
+	const query = "begin with literally 'hello '\ncapture (anything once or more) as first";
+        const regex_new = new SRL(query);
+        const testcase = 'hello world';
+
+        let matches_new = regex_new.getMatch(testcase)
+        assert.equal(matches_new["first"], 'world')
+
+        const regex_cached = new SRL(query);
+
+        let matches_cached = regex_cached.getMatch(testcase)
+        assert.equal(matches_cached["first"], 'world')
+
+    })
 })
